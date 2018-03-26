@@ -1,96 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
+using Windows.UI.Popups;
 
 
 namespace Todos
 {
-    public sealed partial class MainPage : Page
+    public sealed partial class NewPage : Page
     {
-
-        public MainPage()
+        public NewPage()
         {
             this.InitializeComponent();
-            this.ViewModel = new ViewModels.TodoItemViewModel();
         }
 
-        ViewModels.TodoItemViewModel ViewModel { get; set; }
+        private ViewModels.TodoItemViewModel ViewModel;
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.Parameter.GetType() == typeof(ViewModels.TodoItemViewModel))
-            {
-                this.ViewModel = (ViewModels.TodoItemViewModel)(e.Parameter);
-            }
-        }
+            this.ViewModel = (ViewModels.TodoItemViewModel)(e.Parameter);
 
-        private void TodoItem_ItemClicked(object sender, ItemClickEventArgs e)
-        {
-            ViewModel.SelectedItem = (Models.TodoItem)(e.ClickedItem);
-            if (AnotherGrid.Visibility == Visibility.Collapsed)
-                Frame.Navigate(typeof(NewPage), ViewModel);
+            if (ViewModel.SelectedItem == null)
+            {
+                CreateButton.Content = "Create";
+                var button = new MessageDialog("请创建Todo项目！").ShowAsync();
+            }
             else
             {
                 CreateButton.Content = "Update";
-                title_MainPage.Text = ViewModel.SelectedItem.title;
-                description_MainPage.Text = ViewModel.SelectedItem.description;
-                DatePicker_MainPage.Date = ViewModel.SelectedItem.time;
-            }
-        }
+                var button = new MessageDialog("请修改Todo项目！").ShowAsync();
 
-        private void AddAppBarButton_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.SelectedItem = null;
-            if (AnotherGrid.Visibility == Visibility.Collapsed)
-                Frame.Navigate(typeof(NewPage), ViewModel);
-        }
-
-        private void Edit_Click(object sender, RoutedEventArgs e)
-        {
-            var datacontext = (sender as FrameworkElement).DataContext;
-            var item = ToDoListView.ContainerFromItem(datacontext) as ListViewItem;
-            ViewModel.SelectedItem = (Models.TodoItem)(item.Content);
-            Frame.Navigate(typeof(NewPage), ViewModel);
-        }
-
-        private void Delete_Click(object sender, RoutedEventArgs e)
-        {
-            var datacontext = (sender as FrameworkElement).DataContext;
-            var item = ToDoListView.ContainerFromItem(datacontext) as ListViewItem;
-            ViewModel.SelectedItem = (Models.TodoItem)(item.Content);
-            ViewModel.RemoveTodoItem(ViewModel.SelectedItem);
-        }
-
-        private void Main_Cancel(object sender, RoutedEventArgs e)
-        {
-            title_MainPage.Text = String.Empty;
-            description_MainPage.Text = String.Empty;
-            DatePicker_MainPage.Date = DateTimeOffset.Now;
-            CreateButton.Content = "Create";
-        }
-
-        private void CheckBox_check(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(MainPage), ViewModel);
-        }
-
-        private void UpdateButton_Clicked(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel.SelectedItem != null)
-            {
-                ViewModel.UpdateTodoItem(DatePicker_MainPage.Date.ToString(), title_MainPage.Text, description_MainPage.Text);
+                title.Text = ViewModel.SelectedItem.title;
+                description.Text = ViewModel.SelectedItem.description;
+                DatePicker.Date = ViewModel.SelectedItem.time;
             }
         }
 
@@ -168,15 +110,23 @@ namespace Todos
             }
         }
 
-        private void Main_Create(object sender, RoutedEventArgs e)
+        private void DeleteButton_Clicked(object sender, RoutedEventArgs e)
         {
+            if (ViewModel.SelectedItem != null)
+            {
+                ViewModel.RemoveTodoItem(ViewModel.SelectedItem);
+                Frame.Navigate(typeof(MainPage), ViewModel);
+            }
+        }
+        private void CreateButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            //judge whether qualification satisfied
             bool TimeState = true;
             bool titleEmpty = false;
             bool descriptionEmpty = false;
-
-            if (DatePicker_MainPage.Date.AddDays(1) < DateTimeOffset.Now) TimeState = false;
-            if (title_MainPage.Text.Trim() == String.Empty) titleEmpty = true;
-            if (description_MainPage.Text.Trim() == String.Empty) descriptionEmpty = true;
+            if (DatePicker.Date.AddDays(1) < DateTimeOffset.Now) TimeState = false;
+            if (title.Text.Trim() == String.Empty) titleEmpty = true;
+            if (description.Text.Trim() == String.Empty) descriptionEmpty = true;
 
             if (titleEmpty && descriptionEmpty && TimeState)
                 displayNoWords(1);
@@ -193,12 +143,14 @@ namespace Todos
             if (!titleEmpty && !descriptionEmpty && !TimeState)
                 displayNoWords(7);
 
-            if (CreateButton.Content.ToString() != "Update")
+
+            if (ViewModel.SelectedItem == null)
             {
                 if (!titleEmpty && !descriptionEmpty && TimeState)
                 {
-                    string timeStr = DatePicker_MainPage.Date.ToString();
-                    ViewModel.AddTodoItem(title_MainPage.Text, description_MainPage.Text, timeStr);
+                    string timeStr = DatePicker.Date.ToString();
+                    ViewModel.AddTodoItem(title.Text, description.Text, timeStr);
+                    Frame.Navigate(typeof(MainPage), ViewModel);
                 }
             }
             else
@@ -206,9 +158,23 @@ namespace Todos
                 if (!titleEmpty && !descriptionEmpty && TimeState)
                     UpdateButton_Clicked(sender, e);
             }
-            Frame.Navigate(typeof(MainPage), ViewModel);
         }
 
+        private void UpdateButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.SelectedItem != null)
+            {
+                ViewModel.UpdateTodoItem(DatePicker.Date.ToString(), title.Text, description.Text);
+                Frame.Navigate(typeof(MainPage), ViewModel);
+            }
+        }
+
+        private void CancelButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            title.Text = String.Empty;
+            description.Text = String.Empty;
+            DatePicker.Date = DateTimeOffset.Now;
+        }
 
     }
 }
