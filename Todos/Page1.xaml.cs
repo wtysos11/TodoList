@@ -43,7 +43,7 @@ namespace Todos
             }
         }
 
-        private async void displayNoWords(int stateNum)
+        private async void checkOut(int stateNum)
         {
             if (stateNum == 1)
             {
@@ -79,7 +79,7 @@ namespace Todos
             {
                 ContentDialog warningDialog = new ContentDialog()
                 {
-                    Title = "Title和Details的内容为空,设定的日期不符合（需要大于等于今天）",
+                    Title = "Title和Details的内容为空,且日期不合法（大于等于今天）",
                     Content = "请先输入Title和Details的内容并且修改日期",
                     PrimaryButtonText = "Ok"
                 };
@@ -89,7 +89,7 @@ namespace Todos
             {
                 ContentDialog warningDialog = new ContentDialog()
                 {
-                    Title = "Title的内容为空，设定的日期不符合（需要大于等于今天）",
+                    Title = "Title的内容为空，且日期不合法（需要大于等于今天）",
                     Content = "请先输入Title的内容并且修改日期",
                     PrimaryButtonText = "Ok"
                 };
@@ -99,7 +99,7 @@ namespace Todos
             {
                 ContentDialog warningDialog = new ContentDialog()
                 {
-                    Title = "Details的内容为空，设定的日期不符合（需要大于等于今天）",
+                    Title = "Details的内容为空，且日期不合法（需要大于等于今天）",
                     Content = "请先输入Details的内容并且修改日期",
                     PrimaryButtonText = "Ok"
                 };
@@ -109,7 +109,7 @@ namespace Todos
             {
                 ContentDialog warningDialog = new ContentDialog()
                 {
-                    Title = "设定的日期不符合（需要大于等于今天）",
+                    Title = "日期不合法（需要大于等于今天）",
                     Content = "请修改日期",
                     PrimaryButtonText = "Ok"
                 };
@@ -137,19 +137,19 @@ namespace Todos
             if (description.Text.Trim() == String.Empty) descriptionEmpty = true;
 
             if (titleEmpty && descriptionEmpty && TimeState)
-                displayNoWords(1);
+                checkOut(1);
             if (titleEmpty && !descriptionEmpty && TimeState)
-                displayNoWords(2);
+                checkOut(2);
             if (!titleEmpty && descriptionEmpty && TimeState)
-                displayNoWords(3);
+                checkOut(3);
             if (titleEmpty && descriptionEmpty && !TimeState)
-                displayNoWords(4);
+                checkOut(4);
             if (titleEmpty && !descriptionEmpty && !TimeState)
-                displayNoWords(5);
+                checkOut(5);
             if (!titleEmpty && descriptionEmpty && !TimeState)
-                displayNoWords(6);
+                checkOut(6);
             if (!titleEmpty && !descriptionEmpty && !TimeState)
-                displayNoWords(7);
+                checkOut(7);
 
 
             if (ViewModel.SelectedItem == null)
