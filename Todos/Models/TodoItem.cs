@@ -35,12 +35,19 @@ namespace Todos.Models
             this.time = nowTime;
         }
 
-        public TodoItem(string title, string description, string time)
+        public TodoItem(string title, string description, string time,BitmapImage bitmap)
         {
             this.id = Guid.NewGuid().ToString(); //生成id
             this.title = title;
             this.description = description;
-            this.bitmap = new BitmapImage(new Uri("ms-appx:///Assets/star.jpg"));
+            if(bitmap==null)
+            {
+                this.bitmap = new BitmapImage(new Uri("ms-appx:///Assets/star.jpg"));
+            }
+            else
+            {
+                this.bitmap = bitmap;
+            }
             SetTime(time);
             this.isCompleted = false; //默认为未完成
         }

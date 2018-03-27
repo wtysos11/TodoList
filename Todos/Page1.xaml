@@ -35,7 +35,6 @@
                     <TextBlock Name="DueDateText" Text="Due Date" TextWrapping="Wrap" Height="32" Width="180" FontSize="24" RelativePanel.Below="description" Margin="0,5,0,5"/>
                     <Button Name="CreateButton" Content="Create" Click="CreateButton_Clicked" RelativePanel.Below="DatePicker" RelativePanel.AlignLeftWithPanel="True" Margin="0,20,0,50"/>
                     <Button Name="CancelButton" Content="Cancel" Click="CancelButton_Clicked" RelativePanel.Below="DatePicker" RelativePanel.AlignRightWithPanel="True" Margin="0,20,0,50"/>
-                    <TextBlock Name="testblock" Text="test" RelativePanel.Below="CreateButton"/>
                 </RelativePanel>
                 
             </ScrollViewer>

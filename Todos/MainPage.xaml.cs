@@ -28,9 +28,11 @@ namespace Todos
         {
             this.InitializeComponent();
             this.ViewModel = new ViewModels.TodoItemViewModel();
+            bitmapCache = new BitmapImage(new Uri("ms-appx:///Assets/star.jpg"));
         }
 
         ViewModels.TodoItemViewModel ViewModel { get; set; }
+        public BitmapImage bitmapCache;
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -203,13 +205,16 @@ namespace Todos
                 if (!titleEmpty && !descriptionEmpty && TimeState)
                 {
                     string timeStr = DatePicker_MainPage.Date.ToString();
-                    ViewModel.AddTodoItem(title_MainPage.Text, description_MainPage.Text, timeStr);
+                    ViewModel.AddTodoItem(title_MainPage.Text, description_MainPage.Text, timeStr,bitmapCache);
                 }
             }
             else
             {
                 if (!titleEmpty && !descriptionEmpty && TimeState)
+                {
+                    ViewModel.ChangeURI(bitmapCache);
                     UpdateButton_Clicked(sender, e);
+                }
             }
             Frame.Navigate(typeof(MainPage), ViewModel);
         }
@@ -231,8 +236,8 @@ namespace Todos
                 IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read);
                 BitmapImage bitmap = new BitmapImage();
                 await bitmap.SetSourceAsync(stream);
-                ViewModel.ChangeURI(bitmap);
-                Frame.Navigate(typeof(MainPage), ViewModel);
+                bitmapCache = bitmap;
+                image_MainPage.Source = bitmap;
             }
         }
 

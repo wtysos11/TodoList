@@ -13,13 +13,13 @@ namespace Todos.ViewModels
 
         public TodoItemViewModel()
         {
-            this.allItems.Add(new Models.TodoItem("test1", "just test1", "2018/4/29"));
-            this.allItems.Add(new Models.TodoItem("test2", "just test2", "2018/3/29"));
+            this.allItems.Add(new Models.TodoItem("test1", "just test1", "2018/4/29",null));
+            this.allItems.Add(new Models.TodoItem("test2", "just test2", "2018/3/29",null));
         }
 
-        public void AddTodoItem(string title, string description, string time)
+        public void AddTodoItem(string title, string description, string time,BitmapImage bitmap)
         {
-            this.allItems.Add(new Models.TodoItem(title, description, time));
+            this.allItems.Add(new Models.TodoItem(title, description, time,bitmap));
         }
 
         public void RemoveTodoItem(Models.TodoItem item)

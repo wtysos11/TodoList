@@ -23,6 +23,7 @@ namespace Todos
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.ViewModel = (ViewModels.TodoItemViewModel)(e.Parameter);
+            bitmapCache = new BitmapImage(new Uri("ms-appx:///Assets/star.jpg"));
 
             if (ViewModel.SelectedItem == null)
             {
@@ -130,6 +131,7 @@ namespace Todos
             bool TimeState = true;
             bool titleEmpty = false;
             bool descriptionEmpty = false;
+
             if (DatePicker.Date.AddDays(1) < DateTimeOffset.Now) TimeState = false;
             if (title.Text.Trim() == String.Empty) titleEmpty = true;
             if (description.Text.Trim() == String.Empty) descriptionEmpty = true;
@@ -155,17 +157,17 @@ namespace Todos
                 if (!titleEmpty && !descriptionEmpty && TimeState)
                 {
                     string timeStr = DatePicker.Date.ToString();
-                    ViewModel.AddTodoItem(title.Text, description.Text, timeStr);
-                    /*
-                    if(StarPic.Source!="")
-                        ViewModel.ChangeURI(bitmapCache);*/
+                    ViewModel.AddTodoItem(title.Text, description.Text, timeStr,bitmapCache);
                     Frame.Navigate(typeof(MainPage), ViewModel);
                 }
             }
             else
             {
                 if (!titleEmpty && !descriptionEmpty && TimeState)
+                {
+                    ViewModel.ChangeURI(bitmapCache);
                     UpdateButton_Clicked(sender, e);
+                }
             }
         }
 
