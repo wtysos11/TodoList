@@ -113,8 +113,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\130796-106.jpg" />
-    <Content Include="Assets\background.jpg" />
-    <Content Include="Assets\background.png" />
     <Content Include="Assets\backgroundPic.jpg" />
     <Content Include="Assets\MainPagePic.jpg" />
     <Content Include="Assets\star.jpg" />

@@ -3,7 +3,10 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Popups;
-
+using Windows.Storage.Pickers;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace Todos
 {
@@ -15,6 +18,7 @@ namespace Todos
         }
 
         private ViewModels.TodoItemViewModel ViewModel;
+        public BitmapImage bitmapCache;
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -33,6 +37,8 @@ namespace Todos
                 title.Text = ViewModel.SelectedItem.title;
                 description.Text = ViewModel.SelectedItem.description;
                 DatePicker.Date = ViewModel.SelectedItem.time;
+                StarPic.Source = ViewModel.SelectedItem.bitmap;
+               // testblock.Text = StarPic.Source.ToString();//debug
             }
         }
 
@@ -150,6 +156,9 @@ namespace Todos
                 {
                     string timeStr = DatePicker.Date.ToString();
                     ViewModel.AddTodoItem(title.Text, description.Text, timeStr);
+                    /*
+                    if(StarPic.Source!="")
+                        ViewModel.ChangeURI(bitmapCache);*/
                     Frame.Navigate(typeof(MainPage), ViewModel);
                 }
             }
@@ -176,5 +185,27 @@ namespace Todos
             DatePicker.Date = DateTimeOffset.Now;
         }
 
+        private async void SelectButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            FileOpenPicker picker = new FileOpenPicker();
+            // Initialize the picture file type to take
+            picker.FileTypeFilter.Add(".jpg");
+            picker.FileTypeFilter.Add(".jpeg");
+            picker.FileTypeFilter.Add(".png");
+            picker.FileTypeFilter.Add(".bmp");
+            picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+
+            StorageFile file = await picker.PickSingleFileAsync();
+
+            if (file != null)
+            {
+                // Load the selected picture
+                IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read);
+                BitmapImage bitmap = new BitmapImage();
+                await bitmap.SetSourceAsync(stream);
+                bitmapCache = bitmap;
+                StarPic.Source = bitmap;
+            }
+        }
     }
 }

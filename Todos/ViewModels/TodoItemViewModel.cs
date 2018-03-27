@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Todos.ViewModels
 {
@@ -35,5 +36,9 @@ namespace Todos.ViewModels
             this.selectedItem = null;
         }
 
+        public void ChangeURI(BitmapImage otherBitmap)
+        {
+            this.selectedItem.bitmap = otherBitmap;
+        }
     }
 }

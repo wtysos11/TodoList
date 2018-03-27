@@ -5,12 +5,16 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 
@@ -47,6 +51,7 @@ namespace Todos
                 title_MainPage.Text = ViewModel.SelectedItem.title;
                 description_MainPage.Text = ViewModel.SelectedItem.description;
                 DatePicker_MainPage.Date = ViewModel.SelectedItem.time;
+                image_MainPage.Source = ViewModel.SelectedItem.bitmap;
             }
         }
 
@@ -208,7 +213,28 @@ namespace Todos
             }
             Frame.Navigate(typeof(MainPage), ViewModel);
         }
+        private async void SelectButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            FileOpenPicker picker = new FileOpenPicker();
+            // Initialize the picture file type to take
+            picker.FileTypeFilter.Add(".jpg");
+            picker.FileTypeFilter.Add(".jpeg");
+            picker.FileTypeFilter.Add(".png");
+            picker.FileTypeFilter.Add(".bmp");
+            picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
 
+            StorageFile file = await picker.PickSingleFileAsync();
+
+            if (file != null)
+            {
+                // Load the selected picture
+                IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read);
+                BitmapImage bitmap = new BitmapImage();
+                await bitmap.SetSourceAsync(stream);
+                ViewModel.ChangeURI(bitmap);
+                Frame.Navigate(typeof(MainPage), ViewModel);
+            }
+        }
 
     }
 }

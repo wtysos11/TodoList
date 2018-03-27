@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.ComponentModel;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Todos.Models
 {
@@ -13,6 +14,7 @@ namespace Todos.Models
         public string title { get; set; }
         public string description { get; set; }
         public DateTime time { get; set; }
+        public BitmapImage bitmap { get; set; }
 
         public bool completed
         {
@@ -38,6 +40,7 @@ namespace Todos.Models
             this.id = Guid.NewGuid().ToString(); //生成id
             this.title = title;
             this.description = description;
+            this.bitmap = new BitmapImage(new Uri("ms-appx:///Assets/star.jpg"));
             SetTime(time);
             this.isCompleted = false; //默认为未完成
         }
